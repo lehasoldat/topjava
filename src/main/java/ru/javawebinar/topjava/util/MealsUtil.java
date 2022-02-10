@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -15,16 +16,16 @@ import java.util.stream.Collectors;
 
 public class MealsUtil {
 
-    public static List<MealTo> getFilteredWithExceeded(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<MealTo> getFilteredWithExceeded(Collection<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         return filteredByPredicate(meals, meal -> TimeUtil.isBetweenHalfOpen(meal.getTime(), startTime, endTime), caloriesPerDay);
     }
 
-    public static List<MealTo> getWithExceeded(List<Meal> meals, int caloriesPerDay) {
+    public static List<MealTo> getWithExceeded(Collection<Meal> meals, int caloriesPerDay) {
         return filteredByPredicate(meals, meal -> true, caloriesPerDay);
     }
 
 
-    public static List<MealTo> filteredByPredicate(List<Meal> meals, Predicate<Meal> predicate, int caloriesPerDay) {
+    public static List<MealTo> filteredByPredicate(Collection<Meal> meals, Predicate<Meal> predicate, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))

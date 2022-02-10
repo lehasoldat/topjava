@@ -13,7 +13,8 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Edit meal</h2>
+<h2>${param.action == 'update' ? 'Edit meal' : 'Create meal'}</h2>
+<jsp:useBean id="meal" scope="request" type="ru.javawebinar.topjava.model.Meal"/>
 <form method="post" action="meals">
     <p>
         <input type="hidden" name="id" value="${meal.id}"><br><br>

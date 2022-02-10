@@ -34,13 +34,13 @@
             <td>${f:formatLocalDateTime(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td><a href="meals?action=edit&id=${meal.id}">update</a></td>
+            <td><a href="meals?action=update&id=${meal.id}">update</a></td>
             <td><a href="meals?action=delete&id=${meal.id}">delete</a></td>
         </tr>
     </c:forEach>
 </table>
 <br>
 <br>
-<a href="meals?action=edit">Create new meal</a>
+<a href="meals?action=create">Create new meal</a>
 </body>
 </html>
