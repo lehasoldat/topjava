@@ -19,7 +19,7 @@
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<table border="1">
+<table border="1" cellpadding="8" cellspacing="0">
     <tr>
         <th><b>Date</b></th>
         <th><b>Description</b></th>
@@ -29,8 +29,9 @@
     </tr>
 
     <c:forEach var="meal" items="${mealsTo}">
+        <jsp:useBean id="meal" scope="page" type="ru.javawebinar.topjava.model.MealTo"/>
         <tr style="color: ${meal.excess ? 'red' : 'forestgreen'}">
-            <td>${f:formatLocalDateTime(meal.dateTime, 'dd-MM-yyyy hh:mm')}</td>
+            <td>${f:formatLocalDateTime(meal.dateTime)}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
             <td><a href="meals?action=edit&id=${meal.id}">update</a></td>
