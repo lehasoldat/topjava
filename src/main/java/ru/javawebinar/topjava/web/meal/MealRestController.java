@@ -9,7 +9,10 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
@@ -44,4 +47,24 @@ public class MealRestController {
         log.info("getAll");
         return MealsUtil.getTos(service.getAll(authUserId()), authUserCaloriesPerDay());
     }
+
+    //Filtered by date
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate) {
+        log.info("getAll");
+        return MealsUtil.getTos(service.getAll(authUserId(), startDate, endDate), authUserCaloriesPerDay());
+    }
+
+    //Filtered by time
+    public List<MealTo> getAll(LocalTime startTime, LocalTime endTime) {
+        log.info("getAll");
+        return MealsUtil.getFilteredTos(service.getAll(authUserId()), authUserCaloriesPerDay(), startTime, endTime);
+    }
+
+    //Filtered by date and time
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getAll");
+        return MealsUtil.getFilteredTos(service.getAll(authUserId(), startDate, endDate), authUserCaloriesPerDay(), startTime, endTime);
+    }
+
+
 }
