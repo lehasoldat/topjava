@@ -25,6 +25,7 @@ public class MealRestController {
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
+        ValidationUtil.checkNew(meal);
         return service.create(meal, authUserId());
     }
 
@@ -50,9 +51,9 @@ public class MealRestController {
     }
 
     //Filtered by date and time
-    public List<MealTo> getAll(LocalDateTime startDateTime, LocalDateTime endDateTime, LocalTime startTime, LocalTime endTime) {
-        log.info("getAll");
-        return MealsUtil.getFilteredTos(service.getAll(authUserId(), startDateTime, endDateTime), authUserCaloriesPerDay(), startTime, endTime);
+    public List<MealTo> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getAll between date {} - {} and times {} - {}", startDate, endDate, startTime, endTime);
+        return MealsUtil.getFilteredTos(service.getAll(authUserId(), startDate, endDate), authUserCaloriesPerDay(), startTime, endTime);
     }
 
 

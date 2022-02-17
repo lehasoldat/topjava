@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
-import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Service
 public class MealService {
@@ -20,7 +20,6 @@ public class MealService {
     private MealRepository repository;
 
     public Meal create(Meal meal, int userId) {
-        checkNew(meal);
         return checkNotFound(repository.save(meal, userId), "Invalid userId");
     }
 
@@ -40,7 +39,9 @@ public class MealService {
         return checkNotFound(repository.getAll(userId), "Invalid userId");
     }
 
-    public List<Meal> getAll(int userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = DateTimeUtil.getStartDateTime(startDate);
+        LocalDateTime endDateTime = DateTimeUtil.getEndDateTime(endDate);
         return checkNotFound(repository.getAll(userId, startDateTime, endDateTime), "Invalid userId");
     }
 

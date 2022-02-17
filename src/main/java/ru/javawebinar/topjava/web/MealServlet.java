@@ -53,10 +53,10 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        LocalDateTime startDateTime = getDate(request, "startDate") == null ? null : LocalDateTime.of(getDate(request, "startDate"), LocalTime.MIN);
-        LocalDateTime endDateTime = getDate(request, "endDate") == null ? null : LocalDateTime.of(getDate(request, "endDate"), LocalTime.MAX);
-        LocalTime startTime = getTime(request, "startTime");
-        LocalTime endTime = getTime(request, "endTime");
+        LocalDate startDate = getDate(request,"startDate");
+        LocalDate endDate = getDate(request,"endDate");
+        LocalTime startTime = getTime(request,"startTime");
+        LocalTime endTime = getTime(request,"endTime");
 
         switch (action == null ? "all" : action) {
             case "delete":
@@ -74,7 +74,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                request.setAttribute("meals", mealRestController.getAll(startDateTime, endDateTime, startTime, endTime));
+                request.setAttribute("meals", mealRestController.getAll(startDate, endDate, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -85,23 +85,21 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    private LocalDate getDate(HttpServletRequest request, String paramName) {
-        LocalDate date = null;
+    public LocalDate getDate(HttpServletRequest request, String param) {
+        LocalDate localDate = null;
         try {
-            date = LocalDate.parse(request.getParameter(paramName));
+            localDate = LocalDate.parse(request.getParameter(param));
         } catch (Exception ignore) {
         }
-        return date;
+        return localDate;
     }
 
-    private LocalTime getTime(HttpServletRequest request, String paramName) {
-        LocalTime time = null;
+    public LocalTime getTime(HttpServletRequest request, String param) {
+        LocalTime localTime = null;
         try {
-            time = LocalTime.parse(request.getParameter(paramName));
+            localTime = LocalTime.parse(request.getParameter(param));
         } catch (Exception ignore) {
         }
-        return time;
+        return localTime;
     }
-
-
 }
