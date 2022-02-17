@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
-    private final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
+    private final Map<Integer, Map<Integer, Meal>> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
@@ -25,31 +26,32 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (meal == null) return null;
-
+        Map<Integer, Meal> meals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
         if (meal.isNew()) {
             if (!isValid(meal, userId)) return null;
             meal.setId(counter.incrementAndGet());
-            repository.put(meal.getId(), meal);
+            meals.put(meal.getId(), meal);
             return meal;
         }
 
-        if (!isValid(repository.get(meal.getId()), userId)) return null;
+        if (repository.get(userId)==null || !isValid(repository.get(userId).get(meal.getId()), userId)) return null;
 
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        return meals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        if (!isValid(repository.get(id), userId)) return false;
-        return repository.remove(id) != null;
+        Map<Integer, Meal> meals = repository.get(userId);
+        if (!isValid(meals.get(id), userId)) return false;
+        return meals.remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        if (!isValid(repository.get(id), userId)) return null;
-        return repository.get(id);
+        Map<Integer, Meal> meals = repository.get(userId);
+        if (!isValid(meals.get(id), userId)) return null;
+        return meals.get(id);
     }
 
     @Override
@@ -63,10 +65,10 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     private List<Meal> getAllFilteredByPredicate(int userId, Predicate<Meal> predicate) {
-        return repository.values().stream()
-                .filter(meal -> meal.getUserId() == userId)
+        Map<Integer, Meal> meals = repository.get(userId);
+        return meals.values().stream()
                 .filter(predicate)
-                .sorted(Comparator.comparing(Meal::getDateTime, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Meal::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 
