@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
@@ -39,8 +40,8 @@ public class MealService {
         return checkNotFound(repository.getAll(userId), "Invalid userId");
     }
 
-    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
-        return checkNotFound(repository.getAll(userId, startDate, endDate), "Invalid userId");
+    public List<Meal> getAll(int userId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        return checkNotFound(repository.getAll(userId, startDateTime, endDateTime), "Invalid userId");
     }
 
 }

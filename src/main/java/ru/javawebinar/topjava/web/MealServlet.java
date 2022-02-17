@@ -56,8 +56,8 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        LocalDate startDate = getDate(request, "startDate");
-        LocalDate endDate = getDate(request, "endDate");
+        LocalDateTime startDateTime = getDate(request, "startDate") == null ? null : LocalDateTime.of(getDate(request, "startDate"), LocalTime.MIN);
+        LocalDateTime endDateTime = getDate(request, "endDate") == null ? null : LocalDateTime.of(getDate(request, "endDate"), LocalTime.MAX);
         LocalTime startTime = getTime(request, "startTime");
         LocalTime endTime = getTime(request, "endTime");
 
@@ -77,28 +77,7 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                boolean filterByDate = false;
-                boolean filterByTime = false;
-                if (startDate != null || endDate != null) {
-                    startDate = startDate == null ? LocalDate.MIN : startDate;
-                    endDate = endDate == null ? LocalDate.MAX : endDate;
-                    filterByDate = true;
-                }
-                if (startTime != null || endTime != null) {
-                    startTime = startTime == null ? LocalTime.MIN : startTime;
-                    endTime = endTime == null ? LocalTime.MAX : endTime;
-                    filterByTime = true;
-                }
-
-                if (filterByDate && filterByTime) {
-                    request.setAttribute("meals", mealRestController.getAll(startDate, endDate, startTime, endTime));
-                } else if (filterByDate) {
-                    request.setAttribute("meals", mealRestController.getAll(startDate, endDate));
-                } else if (filterByTime) {
-                    request.setAttribute("meals", mealRestController.getAll(startTime, endTime));
-                } else {
-                    request.setAttribute("meals", mealRestController.getAll());
-                }
+                request.setAttribute("meals", mealRestController.getAll(startDateTime, endDateTime, startTime, endTime));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
