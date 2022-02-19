@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,6 +21,14 @@ public class DateTimeUtil {
     public static LocalDateTime getEndDateTime(LocalDate localDate) {
         if (localDate == null) return null;
         return LocalDateTime.of(localDate, LocalTime.MAX);
+    }
+
+    public static LocalDate getDate(String date) {
+        return date.isEmpty() ? null : LocalDate.parse(date);
+    }
+
+    public static LocalTime getTime(String time) {
+        return time.isEmpty() ? null : LocalTime.parse(time);
     }
 }
 

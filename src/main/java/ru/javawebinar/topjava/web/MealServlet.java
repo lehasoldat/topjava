@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.web;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletException;
@@ -19,8 +20,7 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
 
     private MealRestController mealRestController;
-
-    public ConfigurableApplicationContext appCtx;
+    private ConfigurableApplicationContext appCtx;
 
     @Override
     public void init() throws ServletException {
@@ -36,8 +36,9 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setCharacterEncoding("UTF-8");
+        String action = request.getParameter("action");
         String id = request.getParameter("id");
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.parseInt(id),
@@ -53,11 +54,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        LocalDate startDate = getDate(request,"startDate");
-        LocalDate endDate = getDate(request,"endDate");
-        LocalTime startTime = getTime(request,"startTime");
-        LocalTime endTime = getTime(request,"endTime");
-
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -72,9 +68,20 @@ public class MealServlet extends HttpServlet {
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;
+            case "Filter":
+                LocalDate startDate = DateTimeUtil.getDate(request.getParameter("startDate"));
+                LocalDate endDate = DateTimeUtil.getDate(request.getParameter("endDate"));
+                LocalTime startTime = DateTimeUtil.getTime(request.getParameter("startTime"));
+                LocalTime endTime = DateTimeUtil.getTime(request.getParameter("endTime"));
+                request.setAttribute("meals", mealRestController.getAll(startDate, endDate, startTime, endTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
+                break;
+            case "Reset":
+                response.sendRedirect("meals");
+                break;
             case "all":
             default:
-                request.setAttribute("meals", mealRestController.getAll(startDate, endDate, startTime, endTime));
+                request.setAttribute("meals", mealRestController.getAll());
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
@@ -85,21 +92,4 @@ public class MealServlet extends HttpServlet {
         return Integer.parseInt(paramId);
     }
 
-    public LocalDate getDate(HttpServletRequest request, String param) {
-        LocalDate localDate = null;
-        try {
-            localDate = LocalDate.parse(request.getParameter(param));
-        } catch (Exception ignore) {
-        }
-        return localDate;
-    }
-
-    public LocalTime getTime(HttpServletRequest request, String param) {
-        LocalTime localTime = null;
-        try {
-            localTime = LocalTime.parse(request.getParameter(param));
-        } catch (Exception ignore) {
-        }
-        return localTime;
-    }
 }

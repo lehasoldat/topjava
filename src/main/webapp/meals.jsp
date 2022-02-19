@@ -32,18 +32,18 @@
                 <th>До времени<br>(не включая)</th>
             </tr>
             <tr>
-                <td><input type="date" name="startDate"></td>
-                <td><input type="date" name="endDate"></td>
+                <td><input type="date" name="startDate" value="${param.startDate}"></td>
+                <td><input type="date" name="endDate" value="${param.endDate}"></td>
                 <td width="50"></td>
-                <td><input type="time" name="startTime"></td>
-                <td><input type="time" name="endTime"></td>
+                <td><input type="time" name="startTime" value="${param.startTime}"></td>
+                <td><input type="time" name="endTime" value="${param.endTime}"></td>
             </tr>
             <tr>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td></td>
-                <td><input type="reset" value="Reset"><input type="submit" value="Filter"></td>
+                <td><input type="submit" name="action" value="Reset"><input type="submit" name="action" value="Filter"></td>
             </tr>
         </table>
     </form>

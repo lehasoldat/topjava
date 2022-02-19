@@ -27,6 +27,6 @@ public class UserServlet extends HttpServlet {
             SecurityUtil.setAuthUserId(1);
         if (role.equals("admin"))
             SecurityUtil.setAuthUserId(2);
-        response.sendRedirect("index.html");
+        response.sendRedirect("meals");
     }
 }
