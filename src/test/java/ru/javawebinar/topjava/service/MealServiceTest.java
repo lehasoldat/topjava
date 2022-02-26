@@ -30,10 +30,6 @@ public class MealServiceTest {
     @Autowired
     private MealService mealService;
 
-    static {
-        SLF4JBridgeHandler.install();
-    }
-
     @Test
     public void get() {
         assertMatch(mealService.get(MEAL_ID, USER_ID), MEAL);
