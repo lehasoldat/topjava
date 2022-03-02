@@ -1,7 +1,16 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.AfterClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.rules.Verifier;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,6 +22,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Date;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -26,6 +36,33 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
+
+    private final static Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+
+    private static long totalDuration;
+
+    @Rule
+    public TestRule testRule = new TestRule() {
+        @Override
+        public Statement apply(Statement base, Description description) {
+            return new Statement() {
+                @Override
+                public void evaluate() throws Throwable {
+                    Date startDate = new Date();
+                    base.evaluate();
+                    Date endDate = new Date();
+                    long testDuration = endDate.getTime() - startDate.getTime();
+                    log.info("Test {}: duration = {} ms", description.getMethodName(), testDuration);
+                    totalDuration += testDuration;
+                }
+            };
+        }
+    };
+
+    @AfterClass
+    public static void logTotalDuration() {
+        log.info("Test class {}: total duration = {} ms", MealServiceTest.class.getSimpleName(), totalDuration);
+    }
 
     @Autowired
     private MealService service;
@@ -99,8 +136,8 @@ public class MealServiceTest {
     @Test
     public void getBetweenInclusive() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(
-                        LocalDate.of(2020, Month.JANUARY, 30),
-                        LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
+                LocalDate.of(2020, Month.JANUARY, 30),
+                LocalDate.of(2020, Month.JANUARY, 30), USER_ID),
                 meal3, meal2, meal1);
     }
 
