@@ -3,12 +3,9 @@ package ru.javawebinar.topjava.service;
 import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
-import org.junit.rules.TestWatcher;
-import org.junit.rules.Verifier;
+import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +19,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -37,31 +34,30 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
-    private final static Logger log = LoggerFactory.getLogger(MealServiceTest.class);
+    private final static Logger log = LoggerFactory.getLogger("mealServiceTest");
 
-    private static long totalDuration;
+    private static final StringBuilder DURATION_BUILDER = new StringBuilder("");
+    private static long totalDuration = 0;
 
     @Rule
-    public TestRule testRule = new TestRule() {
+    public Stopwatch stopwatch = new Stopwatch() {
         @Override
-        public Statement apply(Statement base, Description description) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    Date startDate = new Date();
-                    base.evaluate();
-                    Date endDate = new Date();
-                    long testDuration = endDate.getTime() - startDate.getTime();
-                    log.info("Test {}: duration = {} ms", description.getMethodName(), testDuration);
-                    totalDuration += testDuration;
-                }
-            };
+        protected void finished(long nanos, Description description) {
+            long duration = TimeUnit.NANOSECONDS.toMillis(nanos);
+            String result = String.format("%-25s%7d ms", description.getMethodName(), duration);
+            log.info(result);
+            DURATION_BUILDER.append(result).append("\n");
+            totalDuration += duration;
         }
     };
 
     @AfterClass
     public static void logTotalDuration() {
-        log.info("Test class {}: total duration = {} ms", MealServiceTest.class.getSimpleName(), totalDuration);
+        log.info("\n--------------------------------------\n" +
+                "TEST METHOD                 DURATION\n" +
+                DURATION_BUILDER.toString() +
+                "--------------------------------------\n" +
+                String.format("%-25s%7d ms", "TOTAL DURATION", totalDuration));
     }
 
     @Autowired
