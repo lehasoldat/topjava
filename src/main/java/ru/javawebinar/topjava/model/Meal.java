@@ -12,16 +12,12 @@ import java.time.LocalTime;
 @Entity
 @Table(name = "meals", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}))
 @NamedQueries({
-        @NamedQuery(name = Meal.UPDATE, query = "update Meal set dateTime=:dateTime, description=:description, calories=:calories where id=:id and user.id=:userId"),
         @NamedQuery(name = Meal.DELETE, query = "delete from Meal where id=:id and user.id=:userId"),
-        @NamedQuery(name = Meal.GET, query = "select m from Meal m where m.id=:id and m.user.id=:userId"),
         @NamedQuery(name = Meal.GET_ALL_SORTED, query = "select m from Meal m where m.user.id=:userId order by m.dateTime desc"),
         @NamedQuery(name = Meal.GET_ALL_SORTED_BETWEEN, query = "select m from Meal m where m.user.id=:userId and m.dateTime>=:startDateTime and m.dateTime<:endDateTime order by m.dateTime desc")})
 public class Meal extends AbstractBaseEntity {
 
-    public static final String UPDATE = "update";
     public static final String DELETE = "delete";
-    public static final String GET = "get";
     public static final String GET_ALL_SORTED = "getAllSorted";
     public static final String GET_ALL_SORTED_BETWEEN = "getAllSortedBetween";
 
