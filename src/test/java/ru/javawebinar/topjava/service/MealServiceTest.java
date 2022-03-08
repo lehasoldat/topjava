@@ -17,7 +17,7 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.Profiles.*;
 
-@ActiveProfiles(profiles = JDBC)
+@ActiveProfiles(profiles = DATAJPA)
 public class MealServiceTest extends AbstractBaseServiceTest {
 
     @Autowired
