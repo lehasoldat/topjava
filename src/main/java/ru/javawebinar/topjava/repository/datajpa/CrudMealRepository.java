@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.datajpa;
 
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,5 +18,14 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     List<Meal> getAllByUserId(Sort sort, int userId);
 
     List<Meal> getAllByUserIdAndDateTimeIsGreaterThanEqualAndDateTimeIsLessThan(Sort sort, int userId, LocalDateTime startDateTime, LocalDateTime endDateTime);
+
+    default Meal getWithUser(int id, int userId) {
+        Meal meal = findById(id).orElse(null);
+        if (meal != null && meal.getUser().getId() == userId) {
+            //initializing "user"
+            Hibernate.initialize(meal.getUser());
+            return meal;
+        } else return null;
+    }
 
 }

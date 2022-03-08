@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -93,12 +94,14 @@ public class UserServiceTest extends AbstractBaseServiceTest {
     @Test
     public void getWithMeals() {
         User user = service.getWithMeals(USER_ID);
-        MealTestData.MEAL_MATCHER.assertMatch(user.getMeals(), MealTestData.meals);
+        List<Meal> actual = user.getMeals();
+        MealTestData.MEAL_MATCHER.assertMatch(actual, MealTestData.meals);
     }
 
     @Test
     public void getWithNoMeals() {
         User user = service.getWithMeals(GUEST_ID);
-        MealTestData.MEAL_MATCHER.assertMatch(user.getMeals(), new ArrayList<>());
+        List<Meal> actual = user.getMeals();
+        MealTestData.MEAL_MATCHER.assertMatch(actual, new ArrayList<>());
     }
 }
