@@ -38,7 +38,7 @@ public class UserService {
     }
 
     public User getWithMeals(int id) {
-        return checkNotFoundWithId(((DataJpaUserRepository) repository).getWithMeals(id), id);
+        return checkNotFoundWithId(repository.getWithMeals(id), id);
     }
 
     public User getByEmail(String email) {
