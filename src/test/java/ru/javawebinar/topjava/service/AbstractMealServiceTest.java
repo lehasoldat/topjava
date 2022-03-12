@@ -1,13 +1,10 @@
 package ru.javawebinar.topjava.service;
 
-import org.hibernate.Hibernate;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
@@ -15,17 +12,13 @@ import java.time.Month;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
-import static ru.javawebinar.topjava.Profiles.*;
-import static ru.javawebinar.topjava.UserTestData.admin;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
-import static ru.javawebinar.topjava.UserTestData.USER_MATCHER;
 
-@ActiveProfiles(profiles = DATAJPA)
-public class MealServiceTest extends AbstractBaseServiceTest {
+public abstract class AbstractMealServiceTest extends AbstractBaseServiceTest {
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @Test
     public void delete() {
@@ -107,10 +100,4 @@ public class MealServiceTest extends AbstractBaseServiceTest {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
     }
 
-    @Test
-    public void getWithUser() {
-        Meal meal = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
-        User actual = (User) Hibernate.unproxy(meal.getUser());
-        USER_MATCHER.assertMatch(actual, admin);
-    }
 }

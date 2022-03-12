@@ -8,9 +8,9 @@ import ru.javawebinar.topjava.Profiles;
 
 @Repository
 @Profile(Profiles.POSTGRES_DB)
-public class JdbcMealRepositoryForPostgres extends BaseAbstractJdbcMealRepository {
+public class PostgresJdbcMealRepository extends BaseAbstractJdbcMealRepository {
 
-    public JdbcMealRepositoryForPostgres(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public PostgresJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 }

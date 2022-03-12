@@ -14,9 +14,9 @@ import java.util.List;
 
 @Repository
 @Profile(Profiles.HSQL_DB)
-public class JdbcMealRepositoryForHsqldb extends BaseAbstractJdbcMealRepository {
+public class HsqldbJdbcMealRepository extends BaseAbstractJdbcMealRepository {
 
-    public JdbcMealRepositoryForHsqldb(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public HsqldbJdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
 
