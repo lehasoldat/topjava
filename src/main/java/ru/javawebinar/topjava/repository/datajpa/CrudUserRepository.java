@@ -19,15 +19,6 @@ public interface CrudUserRepository extends JpaRepository<User, Integer> {
 
     User getByEmail(String email);
 
-    default User getWithMeals(int id) {
-        User user = findById(id).orElse(null);
-
-        if (user == null) return null;
-        else {
-            //initializing "meals"
-            Hibernate.initialize(user.getMeals());
-            return user;
-        }
-    }
-
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id=?1")
+    User getWithMeals(int id);
 }

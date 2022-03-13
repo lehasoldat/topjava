@@ -17,7 +17,7 @@ public class DataJpaMealServiceTest extends AbstractMealServiceTest {
     @Test
     public void getWithUser() {
         Meal meal = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
-        User actual = (User) Hibernate.unproxy(meal.getUser());
+        User actual = meal.getUser();
         USER_MATCHER.assertMatch(actual, admin);
     }
 }
