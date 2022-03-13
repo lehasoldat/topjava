@@ -79,7 +79,6 @@ public class User extends AbstractNamedEntity {
         this.caloriesPerDay = caloriesPerDay;
         this.enabled = enabled;
         this.registered = registered;
-        this.meals = new ArrayList<>();
         setRoles(roles);
     }
 
