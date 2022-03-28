@@ -14,15 +14,15 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
-import static ru.javawebinar.topjava.util.MealsUtil.getTos;
+import static ru.javawebinar.topjava.util.MealsUtil.*;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
@@ -80,13 +80,39 @@ class MealRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getBetweenLocalDateTime() throws Exception {
-        LocalDateTime startDateTime = LocalDateTime.of(2020, Month.JANUARY, 31, 0, 0);
-        LocalDateTime endDateTime = LocalDateTime.of(2020, Month.JANUARY, 31, 23, 59);
-        List<MealTo> expected = getTos(mealService.getBetweenInclusive(startDateTime.toLocalDate(), endDateTime.toLocalDate(), USER_ID), DEFAULT_CALORIES_PER_DAY);
-        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDateTime={?}&endDateTime={?}", startDateTime.toString(), endDateTime.toString()))
+    void getBetween() throws Exception {
+        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
+        LocalTime startTime = LocalTime.of(10, 0);
+        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
+        LocalTime endTime = LocalTime.of(14, 0);
+        List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(startDate, endDate, USER_ID), DEFAULT_CALORIES_PER_DAY, startTime, endTime);
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", startDate, startTime, endDate, endTime))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(expected));
     }
+
+    @Test
+    void getBetweenWithNoTime() throws Exception {
+        LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
+        LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
+        List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(startDate, endDate, USER_ID), DEFAULT_CALORIES_PER_DAY, null, null);
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", startDate, null, endDate, null))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(expected));
+    }
+
+    @Test
+    void getBetweenWithNoDate() throws Exception {
+        LocalTime startTime = LocalTime.of(10, 0);
+        LocalTime endTime = LocalTime.of(14, 0);
+        List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(null, null, USER_ID), DEFAULT_CALORIES_PER_DAY, startTime, endTime);
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", null, startTime, null, endTime))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MEAL_TO_MATCHER.contentJson(expected));
+    }
+
+
 }
