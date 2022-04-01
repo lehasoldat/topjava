@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.web;
 
+import org.junit.jupiter.api.Assumptions;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
@@ -12,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.service.UserService;
 
 import javax.annotation.PostConstruct;
 
@@ -38,6 +41,12 @@ public abstract class AbstractControllerTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    protected UserService userService;
+
     @PostConstruct
     private void postConstruct() {
         mockMvc = MockMvcBuilders
@@ -48,5 +57,9 @@ public abstract class AbstractControllerTest {
 
     protected ResultActions perform(MockHttpServletRequestBuilder builder) throws Exception {
         return mockMvc.perform(builder);
+    }
+
+    protected void AssumeDataJpa() {
+        Assumptions.assumeTrue(env.acceptsProfiles(org.springframework.core.env.Profiles.of(ru.javawebinar.topjava.Profiles.DATAJPA)), "Only for data jpa profile");
     }
 }

@@ -1,15 +1,27 @@
 package ru.javawebinar.topjava;
 
+import org.assertj.core.api.Assertions;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
 
 public class UserTestData {
     public static final MatcherFactory.Matcher<User> USER_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(User.class, "registered", "meals");
+    public static final MatcherFactory.Matcher<User> USER_WITH_MEALS_MATCHER = MatcherFactory.usingAssertions(
+            User.class,
+            (a, e) -> Assertions.assertThat(a)
+                    .usingRecursiveComparison()
+                    .ignoringFields("registered", "meals.user")
+                    .ignoringAllOverriddenEquals()
+                    .isEqualTo(e),
+            (a, e) -> {
+                throw new UnsupportedOperationException();
+            });
 
     public static final int USER_ID = START_SEQ;
     public static final int ADMIN_ID = START_SEQ + 1;
@@ -19,6 +31,11 @@ public class UserTestData {
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
     public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest");
+
+    static {
+        admin.setMeals(List.of(MealTestData.adminMeal2, MealTestData.adminMeal1));
+        user.setMeals(MealTestData.meals);
+    }
 
     public static User getNew() {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));

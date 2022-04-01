@@ -18,14 +18,20 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Support converting json MvcResult to objects for comparation.
  */
 public class MatcherFactory {
+
+    public static <T> Matcher<T> usingAssertions(Class<T> clazz, BiConsumer<T, T> assertion, BiConsumer<Iterable<T>, Iterable<T>> iterableAssertion) {
+        return new Matcher<>(clazz, assertion, iterableAssertion);
+    }
+
+
     public static <T> Matcher<T> usingIgnoringFieldsComparator(Class<T> clazz, String... fieldsToIgnore) {
-        return new Matcher<>(clazz,
+        return usingAssertions(clazz,
                 (a, e) -> assertThat(a).usingRecursiveComparison().ignoringFields(fieldsToIgnore).isEqualTo(e),
                 (a, e) -> assertThat(a).asList().usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(e));
     }
 
     public static <T> Matcher<T> usingEqualsComparator(Class<T> clazz) {
-        return new Matcher<>(clazz,
+        return usingAssertions(clazz,
                 (a, e) -> assertThat(a).isEqualTo(e),
                 (a, e) -> assertThat(a).isEqualTo(e));
     }
