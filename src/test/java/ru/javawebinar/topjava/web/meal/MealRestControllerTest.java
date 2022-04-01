@@ -87,7 +87,11 @@ class MealRestControllerTest extends AbstractControllerTest {
         LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
         LocalTime endTime = LocalTime.of(14, 0);
         List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(startDate, endDate, USER_ID), user.getCaloriesPerDay(), startTime, endTime);
-        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", startDate, startTime, endDate, endTime))
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter")
+                .param("startDate", startDate.toString())
+                .param("startTime", startTime.toString())
+                .param("endDate", endDate.toString())
+                .param("endTime", endTime.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(expected));
@@ -98,7 +102,9 @@ class MealRestControllerTest extends AbstractControllerTest {
         LocalDate startDate = LocalDate.of(2020, Month.JANUARY, 31);
         LocalDate endDate = LocalDate.of(2020, Month.JANUARY, 31);
         List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(startDate, endDate, USER_ID), user.getCaloriesPerDay(), null, null);
-        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", startDate, null, endDate, null))
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter")
+                .param("startDate", startDate.toString())
+                .param("endDate", endDate.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(expected));
@@ -109,7 +115,9 @@ class MealRestControllerTest extends AbstractControllerTest {
         LocalTime startTime = LocalTime.of(10, 0);
         LocalTime endTime = LocalTime.of(14, 0);
         List<MealTo> expected = getFilteredTos(mealService.getBetweenInclusive(null, null, USER_ID), user.getCaloriesPerDay(), startTime, endTime);
-        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter?startDate={?}&startTime={?}&endDate={?}&endTime={?}", null, startTime, null, endTime))
+        perform(MockMvcRequestBuilders.get(MEAL_REST_URL + "filter")
+                .param("startTime", startTime.toString())
+                .param("endTime", endTime.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MEAL_TO_MATCHER.contentJson(expected));
