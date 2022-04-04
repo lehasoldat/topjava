@@ -28,3 +28,14 @@ $(function () {
         })
     )
 })
+
+function filterMeals() {
+    $.ajax({
+        url: ctx.ajaxUrl + "filter",
+        type: "GET",
+        data: $("#filterForm").serialize()
+    }).done(function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered")
+    })
+}
