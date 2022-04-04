@@ -33,8 +33,9 @@
             </div>
         </form>
         <button class="btn btn-primary" onclick="filterMeals()"><spring:message code="meal.filter"/></button>
-        <hr/>
-        <button class="btn btn-primary" onclick="add()">
+        <button class="btn btn-secondary" onclick="resetFilterMeals()"><spring:message code="common.reset"/></button>
+        <br/>
+        <button class="btn btn-primary mt-4" onclick="add()">
             <span class="fa fa-plus"></span>
             <spring:message code="meal.add"/>
         </button>

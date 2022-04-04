@@ -39,3 +39,8 @@ function filterMeals() {
         successNoty("Filtered")
     })
 }
+
+function resetFilterMeals() {
+    $("#filterForm").find(":input").val("");
+    updateTable();
+}
