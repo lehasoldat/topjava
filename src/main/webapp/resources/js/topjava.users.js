@@ -45,3 +45,21 @@ $(function () {
         })
     );
 });
+
+function changeStatus(cb) {
+    let id = $(cb).closest("tr").attr("id");
+    $.ajax({
+        url: ctx.ajaxUrl + id + "/enable",
+        type: "POST",
+        data: {
+            "userStatus": cb.checked
+        }
+    }).done(function () {
+        updateTable();
+        if (cb.checked) {
+            successNoty("User enabled");
+        } else {
+            successNoty("User disabled")
+        }
+    })
+}
