@@ -63,3 +63,7 @@ function changeStatus(cb) {
         }
     })
 }
+
+function updateView() {
+    updateTable();
+}

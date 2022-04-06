@@ -36,11 +36,14 @@ function filterMeals() {
         data: $("#filterForm").serialize()
     }).done(function (data) {
         ctx.datatableApi.clear().rows.add(data).draw();
-        successNoty("Filtered")
     })
 }
 
 function resetFilterMeals() {
     $("#filterForm").find(":input").val("");
     updateTable();
+}
+
+function updateView() {
+    filterMeals();
 }

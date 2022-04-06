@@ -45,7 +45,7 @@ function save() {
         data: form.serialize()
     }).done(function () {
         $("#editRow").modal("hide");
-        updateTable();
+        updateView();
         successNoty("Saved");
     });
 }
