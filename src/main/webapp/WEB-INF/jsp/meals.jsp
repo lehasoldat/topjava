@@ -12,29 +12,40 @@
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
-        <form id="filterForm">
-            <div class="row">
-                <div class="form-group col-3 text-center">
-                    <label for="startDate" class="col-form-label"><spring:message code="meal.startDate"/></label>
-                    <input type="date" class="form-control" id="startDate" name="startDate" value="${param.startDate}">
-                </div>
-                <div class="form-group col-3 text-center">
-                    <label for="startTime" class="col-form-label"><spring:message code="meal.startTime"/></label>
-                    <input type="time" class="form-control" id="startTime" name="startTime" value="${param.startTime}">
-                </div>
-                <div class="form-group col-3 text-center">
-                    <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/></label>
-                    <input type="date" class="form-control" id="endDate" name="endDate" value="${param.endDate}">
-                </div>
-                <div class="form-group col-3 text-center">
-                    <label for="endTime" class="col-form-label"><spring:message code="meal.endTime"/></label>
-                    <input type="time" class="form-control" id="endTime" name="endTime" value="${param.endTime}">
-                </div>
+        <div class="card">
+            <div class="card-body">
+                <form id="filterForm">
+                    <div class="row">
+                        <div class="form-group col-2 text-center">
+                            <label for="startDate" class="col-form-label"><spring:message
+                                    code="meal.startDate"/></label>
+                            <input type="date" class="form-control" id="startDate" name="startDate"
+                                   value="${param.startDate}">
+                        </div>
+                        <div class="form-group col-2 text-center">
+                            <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/></label>
+                            <input type="date" class="form-control" id="endDate" name="endDate"
+                                   value="${param.endDate}">
+                        </div>
+                        <div class="form-group offset-2 col-3 text-center">
+                            <label for="startTime" class="col-form-label"><spring:message
+                                    code="meal.startTime"/></label>
+                            <input type="time" class="form-control" id="startTime" name="startTime"
+                                   value="${param.startTime}">
+                        </div>
+                        <div class="form-group col-3 text-center">
+                            <label for="endTime" class="col-form-label"><spring:message code="meal.endTime"/></label>
+                            <input type="time" class="form-control" id="endTime" name="endTime"
+                                   value="${param.endTime}">
+                        </div>
+                    </div>
+                </form>
             </div>
-        </form>
-        <button class="btn btn-primary" onclick="filterMeals()"><spring:message code="meal.filter"/></button>
-        <button class="btn btn-secondary" onclick="resetFilterMeals()"><spring:message code="common.reset"/></button>
-        <br/>
+            <div class="card-footer text-right">
+                <button class="btn btn-secondary" onclick="resetFilter()"><span class="fa fa-remove"></span> <spring:message code="common.cancel"/></button>
+                <button class="btn btn-primary" onclick="getFilteredAndUpdateTable()"><span class="fa fa-filter"></span> <spring:message code="meal.filter"/></button>
+            </div>
+        </div>
         <button class="btn btn-primary mt-4" onclick="add()">
             <span class="fa fa-plus"></span>
             <spring:message code="meal.add"/>
@@ -51,7 +62,7 @@
             </thead>
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr id="${meal.id}" data-meal-excess="${meal.excess}" >
+                <tr id="${meal.id}" data-meal-excess="${meal.excess}">
                     <td>
                             <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>
                             <%--<%=TimeUtil.toString(meal.getDateTime())%>--%>
@@ -86,7 +97,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="description" class="col-form-label"><spring:message code="meal.description"/></label>
+                        <label for="description" class="col-form-label"><spring:message
+                                code="meal.description"/></label>
                         <input type="text" class="form-control" id="description" name="description"
                                placeholder="<spring:message code="meal.description"/>">
                     </div>

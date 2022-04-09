@@ -2,8 +2,10 @@ const userAjaxUrl = "admin/users/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
-    ajaxUrl: userAjaxUrl
-};
+    ajaxUrl: userAjaxUrl,
+    updateTable: getAllAndUpdateTable
+}
+
 
 // $(document).ready(function () {
 $(function () {
@@ -55,15 +57,11 @@ function changeStatus(cb) {
             "userStatus": cb.checked
         }
     }).done(function () {
-        updateTable();
+        ctx.updateTable();
         if (cb.checked) {
             successNoty("User enabled");
         } else {
             successNoty("User disabled")
         }
     })
-}
-
-function updateView() {
-    updateTable();
 }
