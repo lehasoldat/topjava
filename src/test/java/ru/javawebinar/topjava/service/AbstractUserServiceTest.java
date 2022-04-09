@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import ru.javawebinar.topjava.UserTestData;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -89,9 +88,13 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    void setEnabledToFalse() {
+    void changeEnabled() {
         service.enable(false, ADMIN_ID);
         User actual = service.get(ADMIN_ID);
         Assertions.assertFalse(actual.isEnabled());
+
+        service.enable(true, ADMIN_ID);
+        actual = service.get(ADMIN_ID);
+        Assertions.assertTrue(actual.isEnabled());
     }
 }

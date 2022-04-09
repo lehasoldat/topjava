@@ -6,8 +6,8 @@ tr[data-meal-excess="true"] {
     color: red;
 }
 
-tr[userEnabled="false"] {
-    background-color: lightpink!important;
+tr[data-userEnabled="false"] {
+    opacity: 0.3;
 }
 
 .fa {

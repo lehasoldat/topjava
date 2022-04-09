@@ -99,8 +99,8 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void setEnabledToFalse() throws Exception {
-        perform(MockMvcRequestBuilders.post(REST_URL + USER_ID + "/enable")
+    void changeEnabled() throws Exception {
+        perform(MockMvcRequestBuilders.patch(REST_URL + USER_ID + "/enable")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(Map.of("userStatus", Boolean.FALSE))))
                 .andDo(print())

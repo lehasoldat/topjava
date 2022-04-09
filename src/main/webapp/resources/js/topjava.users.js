@@ -48,20 +48,18 @@ $(function () {
     );
 });
 
-function changeStatus(cb) {
-    let id = $(cb).closest("tr").attr("id");
+function changeStatus(cb, id) {
+    let enable = $(cb).is(":checked");
     $.ajax({
         url: ctx.ajaxUrl + id + "/enable",
         type: "POST",
         data: {
-            "userStatus": cb.checked
+            "userStatus": enable
         }
     }).done(function () {
-        ctx.updateTable();
-        if (cb.checked) {
-            successNoty("User enabled");
-        } else {
-            successNoty("User disabled")
-        }
+        $(cb).closest("tr").attr("data-userEnabled", enable);
+        successNoty(enable ? "User enabled" : "User disabled")
+    }).fail(function () {
+        $(cb).param("checked", !enable);
     })
 }
