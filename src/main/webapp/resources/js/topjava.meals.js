@@ -31,7 +31,7 @@ $(function () {
                     "data": "dateTime",
                     "render": function (data, type, row) {
                         if (type === "display") {
-                            return data.replace("T", " ");
+                            return formatDateTime(data);
                         }
                         return data;
                     }
@@ -66,4 +66,16 @@ $(function () {
             }
         })
     );
+    $.datetimepicker.setLocale(i18n["locale"]);
+    $("#dateTime").datetimepicker({
+        "format": "Y-m-d H:i"
+    });
+    $("#startDate, #endDate").datetimepicker({
+        "timepicker": false,
+        "format": "Y-m-d"
+    });
+    $("#startTime, #endTime").datetimepicker({
+        "datepicker": false,
+        "format": "H:i"
+    });
 });
