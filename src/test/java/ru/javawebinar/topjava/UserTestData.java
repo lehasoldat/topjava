@@ -40,6 +40,10 @@ public class UserTestData {
         return new User(null, "New", "new@gmail.com", "newPass", 1555, false, new Date(), Collections.singleton(Role.USER));
     }
 
+    public static User getNotValid() {
+        return new User(null, "", "", "newPass", 5, false, new Date(), Collections.singleton(Role.USER));
+    }
+
     public static User getUpdated() {
         User updated = new User(user);
         updated.setEmail("update@gmail.com");
