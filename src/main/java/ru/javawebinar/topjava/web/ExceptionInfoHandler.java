@@ -40,6 +40,10 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+        Throwable rootCause = ValidationUtil.getRootCause(e);
+        String message = "User with this email already exists";
+        if (rootCause.getMessage().contains("email"))
+            return logAndGetErrorInfo(req, message, DATA_ERROR);
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 

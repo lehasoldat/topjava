@@ -20,10 +20,15 @@ public class GlobalExceptionHandler {
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) throws Exception {
         log.error("Exception at request " + req.getRequestURL(), e);
         Throwable rootCause = ValidationUtil.getRootCause(e);
-
+        String message;
+        if (rootCause.getMessage().contains("email")) {
+            message = "User with this email already exists";
+        } else {
+            message = rootCause.toString();
+        }
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         ModelAndView mav = new ModelAndView("exception",
-                Map.of("exception", rootCause, "message", rootCause.toString(), "status", httpStatus));
+                Map.of("exception", rootCause, "message", message, "status", httpStatus));
         mav.setStatus(httpStatus);
 
         // Interceptor is not invoked, put userTo
