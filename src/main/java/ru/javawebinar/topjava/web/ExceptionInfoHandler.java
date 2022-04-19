@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,10 +15,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Locale;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -24,6 +29,9 @@ import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 @Order(Ordered.HIGHEST_PRECEDENCE + 5)
 public class ExceptionInfoHandler {
     private static Logger log = LoggerFactory.getLogger(ExceptionInfoHandler.class);
+
+    @Autowired(required = false)
+    ReloadableResourceBundleMessageSource messageSource;
 
     //  http://stackoverflow.com/a/22358422/548473
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -36,10 +44,11 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
+        Locale locale = RequestContextUtils.getLocale(req);
         if (rootCause.getMessage().contains("email")) {
-            return logAndGetErrorInfo(req, ErrorMessages.USED_EMAIL_MESSAGE, DATA_ERROR);
+            return logAndGetErrorInfo(req, messageSource.getMessage("error.DUPLICATE_EMAIL", null, locale), DATA_ERROR);
         } else if (rootCause.getMessage().contains("datetime")) {
-            return logAndGetErrorInfo(req, ErrorMessages.USED_DATE_TIME_MESSAGE, DATA_ERROR);
+            return logAndGetErrorInfo(req, messageSource.getMessage("error.DUPLICATE_DATE_TIME", null, locale), DATA_ERROR);
         }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }

@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.web.user;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -12,7 +11,6 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
-import ru.javawebinar.topjava.util.exception.ErrorMessages;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
@@ -81,13 +79,11 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     @Test
     void registerUsedEmail() throws Exception {
         UserTo newTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newTo)))
                 .andDo(print())
                 .andExpect(status().isConflict());
-        String responseBody = action.andReturn().getResponse().getContentAsString();
-        Assertions.assertTrue(responseBody.contains(ErrorMessages.USED_EMAIL_MESSAGE));
     }
 
     @Test
