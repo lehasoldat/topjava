@@ -1,18 +1,20 @@
 package ru.javawebinar.topjava.web.meal;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.util.exception.ErrorMessages;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.json.JsonUtil;
-
-import java.sql.SQLOutput;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -114,6 +116,20 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(user))
                 .content(JsonUtil.writeValue(newMeal)))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Transactional(propagation = Propagation.NEVER)
+    @Test
+    void createWithLocationUsedDateTime() throws Exception {
+        Meal newMeal = getNew();
+        newMeal.setDateTime(meal1.getDateTime());
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(user))
+                .content(JsonUtil.writeValue(newMeal)))
+                .andExpect(status().isConflict());
+        String responseBody = action.andReturn().getResponse().getContentAsString();
+        Assertions.assertTrue(responseBody.contains(ErrorMessages.USED_DATE_TIME_MESSAGE));
     }
 
     @Test

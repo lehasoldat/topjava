@@ -14,14 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.javawebinar.topjava.util.ValidationUtil;
-import ru.javawebinar.topjava.util.exception.ErrorInfo;
-import ru.javawebinar.topjava.util.exception.ErrorType;
-import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.util.exception.*;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -41,9 +36,11 @@ public class ExceptionInfoHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
         Throwable rootCause = ValidationUtil.getRootCause(e);
-        String message = "User with this email already exists";
-        if (rootCause.getMessage().contains("email"))
-            return logAndGetErrorInfo(req, message, DATA_ERROR);
+        if (rootCause.getMessage().contains("email")) {
+            return logAndGetErrorInfo(req, ErrorMessages.USED_EMAIL_MESSAGE, DATA_ERROR);
+        } else if (rootCause.getMessage().contains("datetime")) {
+            return logAndGetErrorInfo(req, ErrorMessages.USED_DATE_TIME_MESSAGE, DATA_ERROR);
+        }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 

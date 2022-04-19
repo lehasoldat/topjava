@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.ErrorMessages;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class GlobalExceptionHandler {
         Throwable rootCause = ValidationUtil.getRootCause(e);
         String message;
         if (rootCause.getMessage().contains("email")) {
-            message = "User with this email already exists";
+            message = ErrorMessages.USED_EMAIL_MESSAGE;
         } else {
             message = rootCause.toString();
         }

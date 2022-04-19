@@ -1,12 +1,16 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.service.UserService;
+import ru.javawebinar.topjava.util.exception.ErrorMessages;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 
@@ -113,7 +117,6 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andExpect(status().isCreated());
-
         User created = USER_MATCHER.readFromJson(action);
         int newId = created.id();
         newUser.setId(newId);
@@ -129,6 +132,20 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(admin))
                 .content(jsonWithPassword(newUser, newUser.getPassword())))
                 .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    @Transactional(propagation = Propagation.NEVER)
+    void createWithLocationUsedEmail() throws Exception {
+        User newUser = getNew();
+        newUser.setEmail("user@yandex.ru");
+        ResultActions actions = perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(admin))
+                .content(jsonWithPassword(newUser, newUser.getPassword())))
+                .andExpect(status().isConflict());
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        Assertions.assertTrue(responseBody.contains(ErrorMessages.USED_EMAIL_MESSAGE));
     }
 
     @Test
