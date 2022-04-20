@@ -26,5 +26,11 @@
                 </button>
             </form:form>
         </sec:authorize>
+        <form action="${requestScope['javax.servlet.forward.request_uri']}" method="get">
+            <select class="custom-select" name="locale" onchange="this.form.submit()" required>
+                <option value="ru" ${pageContext.response.locale=='ru'?'selected':''}>ru</option>
+                <option value="en" ${pageContext.response.locale=='en'?'selected':''}>en</option>
+            </select>
+        </form>
     </div>
 </nav>
